@@ -1,12 +1,18 @@
-from sqlalchemy import create_engine
-import pandas as pd
-import streamlit as st
 from dotenv import load_dotenv
 import os
+import streamlit as st
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = (
+    os.getenv("DATABASE_URL")
+    or st.secrets.get("DATABASE_URL")
+)
+
+if not DATABASE_URL:
+    raise RuntimeError(
+        "DATABASE_URL não encontrada. Configure no .env (local) ou em Secrets (Streamlit Cloud)."
+    )
 
 @st.cache_resource
 def engine():
